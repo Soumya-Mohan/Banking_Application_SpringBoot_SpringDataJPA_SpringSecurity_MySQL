@@ -1,0 +1,5 @@
+# Created at 2024-07-11T14:41:33.763
+Boot Manifest-JAR contains absolute paths in classpath 'D:\Soumya\Java Projects\Banking_Application_SpringBoot_SpringDataJPA_SpringSecurity_MySQL\User-Service\target\test-classes'
+Hint: <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
+'other' has different root
+
