@@ -18,4 +18,14 @@ public class Constants {
     public static final int PAN_VALIDATION_FAIL_CODE = 103;
     public static final String DATA_NOT_FOUND = "The given data does not exists please Register to get HDFC Benefits";
     public static final int DATA_NOT_FOUND_CODE = 104;
+
+
+    public static final String NOT_FOUND = "404";
+    public static final String CONFLICT = "409";
+
+    public static final String BAD_REQUEST = "400";
+
+    //Kafka Topics
+    public static final String CREATE_NEW_ACCOUNT_ID_TOPIC="Create-account";
+
 }

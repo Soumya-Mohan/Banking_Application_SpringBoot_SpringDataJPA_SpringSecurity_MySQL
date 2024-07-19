@@ -5,6 +5,7 @@ import com.UserService.Model.dto.UserprofileDto;
 import com.UserService.Model.entity.Profile;
 import com.UserService.Model.utility.Constants;
 import com.UserService.Repository.ProfileRepository;
+import com.UserService.exception.ResourceConflict;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,26 +35,33 @@ public class ProfileServiceImpl implements ProfileService {
 
     private static Response response = new Response();
 
+    private final KafkaTemplate<String, String> kafkaTemplate;
+
     @Override
     public Response createUser(UserprofileDto userprofileDto) {
         log.info("Inside ProfileServiceImpl::createUser : {}");
         try {
             //checking user is already exists or not based on aadhar card number
-            Optional<Profile> profileData = profileRepository.findbyAadharNum(userprofileDto.getAadhar_num());
-            if (profileData.isPresent()) {
-                return Response.builder().message(Constants.USER_ALREADY_FOUND).code(Constants.USER_ALREADY_FOUND_CODE).build();
-            }
+            profileRepository.findbyAadharNum(userprofileDto.getAadhar_num())
+                    .ifPresent(account -> {
+                        log.error("Account already exists on the server");
+                        throw new ResourceConflict("Account already exists on the server");
+                    });
             Profile profile = convertToProfileEntity(userprofileDto);
             profile = profileRepository.save(profile);
             if (profile.getAadhar_num() != null) {
+                log.info("Inside ProfileServiceImpl::createUser == the account is created and sending data to Kafka Consumer");
+                kafkaTemplate.send(Constants.CREATE_NEW_ACCOUNT_ID_TOPIC, profile.getAadhar_num());
+                log.info("Inside ProfileServiceImpl::createUser == the profile data sent to Kafka Consumer");
                 response.setCode(Constants.SUCCESS_CODE);
                 response.setMessage(Constants.SUCCESS);
             } else {
-                throw new SQLException();
+                throw new SQLException("date not saved");
             }
 
 
         } catch (Exception e) {
+            log.error("Exception in ProfileServiceImpl::createUser message == {}", e.getMessage());
             e.printStackTrace();
         }
         return response;
@@ -60,11 +69,22 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public Response getProfileByAadharNumOrPan(String number) {
-        Optional<Profile> profileData = profileRepository.findbyAadharNum(number);
-        if (!profileData.isPresent()) {
-            return Response.builder().message(Constants.DATA_NOT_FOUND).code(Constants.DATA_NOT_FOUND_CODE).build();
-        }
-        return Response.builder().message(Constants.SUCCESS).code(Constants.SUCCESS_CODE).data(profileData.get()).build();
+        profileRepository.findbyAadharNum(number)
+                .ifPresentOrElse((profile) ->
+                        {
+                            log.info("Inside ProfileServiceImpl::getProfileByAadharNumOrPan ==nThe account details are fetched");
+                            response.setMessage(Constants.SUCCESS);
+                            response.setCode(Constants.SUCCESS_CODE);
+                            response.setData(profile);
+                        },
+                        () -> {
+                            log.info("The Given account details are not found in the database");
+                            response.setMessage(Constants.DATA_NOT_FOUND);
+                            response.setCode(Constants.DATA_NOT_FOUND_CODE);
+                        }
+                );
+
+        return response;
     }
 
     /**

@@ -3,7 +3,6 @@ com\UserService\Model\entity\Profile.class
 com\UserService\service\ProfileService.class
 com\UserService\Model\utility\Validation.class
 com\UserService\Model\dto\Response.class
-com\UserService\controller\ProfileController.class
 com\UserService\Model\entity\Profile$ProfileBuilder.class
 com\UserService\Model\utility\Constants.class
 com\UserService\Model\dto\UserprofileDto.class
