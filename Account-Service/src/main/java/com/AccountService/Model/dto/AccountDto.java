@@ -21,7 +21,6 @@ public class AccountDto implements Serializable {
 
 
     @JsonProperty("AccountNumber")
-
     private String accnum;
 
     @JsonProperty("CustomerID")
@@ -59,6 +58,20 @@ public class AccountDto implements Serializable {
 
     @JsonProperty("AadharNumber")
     private String aadharnum;
+
+    @JsonProperty("branchName")
+    private String b_name;
+
+    @JsonProperty("branchAddress")
+    private String b_add;
+
+    @JsonProperty("branchCode")
+    private String b_code;
+
+    @JsonProperty("branchPhoneNumber")
+    private String b_ph_num;
+
+
 
     public AccountDto(BigDecimal accBalance) {
         this.acc_balance = accBalance;

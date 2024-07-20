@@ -21,6 +21,7 @@ public class Acc_details {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int acc_id;
     private String accnum;
+    @Column(name = "customerId")
     private String customerId;
     private boolean mobile_banking_status;
     private boolean net_banking_status;

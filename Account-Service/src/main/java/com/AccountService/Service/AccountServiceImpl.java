@@ -26,7 +26,7 @@ import static com.AccountService.Model.utility.Validation.generateRandomNumber;
 @Transactional
 public class AccountServiceImpl implements AccountService {
 
-    private static Response response = new Response();
+    private static final Response response = new Response();
     private final KafkaTemplate<String, String> kafkaTemplate;
     @Autowired
     AccountDetailsRepository accountDetailsRepository;
@@ -61,16 +61,20 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Response getAccountDetailsByAccNum(String accNum) {
         log.info("Inside AccountServiceImpl ::getAccountDetailsByAccNum : {}", accNum);
-        accountDetailsRepository.findAcc_detailsByAccnumOrCustomerId(accNum, accNum).ifPresentOrElse((account) -> {
+
+        AccountDto accountDto=accountDetailsRepository.findAcc_detailsByAccnumOrCustomerIdWithBranchDetails(accNum);
+    if(accountDto.getAadharnum()!=null){
             log.info("Inside AccountServiceImpl::getAccountDetailsByAccNum ==nThe account details are fetched");
+
             response.setMessage(Constants.SUCCESS);
             response.setCode(Constants.SUCCESS_CODE);
-            response.setData(account);
-        }, () -> {
+            response.setData(accountDto);
+        }
+    else{
             log.error("Inside AccountServiceImpl::getAccountDetailsByAccNum ==The account details are not found in database");
             response.setMessage(Constants.DATA_NOT_FOUND);
             response.setCode(Constants.DATA_NOT_FOUND_CODE);
-        });
+        }
         return response;
     }
 

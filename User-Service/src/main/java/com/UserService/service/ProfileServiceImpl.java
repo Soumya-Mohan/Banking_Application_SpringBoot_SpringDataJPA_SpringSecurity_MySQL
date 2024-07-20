@@ -33,7 +33,7 @@ public class ProfileServiceImpl implements ProfileService {
     @Autowired
     private ModelMapper modelMapper;
 
-    private static Response response = new Response();
+    private static final Response response = new Response();
 
     private final KafkaTemplate<String, String> kafkaTemplate;
 

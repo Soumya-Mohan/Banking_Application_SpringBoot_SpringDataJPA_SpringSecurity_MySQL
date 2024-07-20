@@ -24,11 +24,11 @@ public class UserProfileController {
         if(userprofileDto.equals(null)){
             return Response.builder().message(Constants.INPUT_NULL).code(Constants.INPUT_NULL_CODE).build();
         }
-        if(Validation.isValid(userprofileDto.getAadhar_num(),Constants.AADHAR_REGEX)==false){
+        if(!Validation.isValid(userprofileDto.getAadhar_num(), Constants.AADHAR_REGEX)){
             log.info("creating userProfile with: {}:: Aadhar validation fail");
             return Response.builder().message(Constants.AADHAR_VALIDATION_FAIL).code(Constants.AADHAR_VALIDATION_FAIL_CODE).build();
         }
-        if(Validation.isValid(userprofileDto.getPAN_Num(),Constants.PAN_REGEX)==false){
+        if(!Validation.isValid(userprofileDto.getPAN_Num(), Constants.PAN_REGEX)){
             log.info("creating userProfile with: {}:: PAN validation fail");
             return Response.builder().message(Constants.PAN_VALIDATION_FAIL).code(Constants.PAN_VALIDATION_FAIL_CODE).build();
         }
