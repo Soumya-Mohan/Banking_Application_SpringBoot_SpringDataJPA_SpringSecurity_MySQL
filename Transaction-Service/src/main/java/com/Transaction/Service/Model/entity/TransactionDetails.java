@@ -22,32 +22,22 @@ public class TransactionDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int trans_id;
 
-    @Column(name = "transaction_number")
-    private String transactionNumber;
+    private String transaction_number;
 
-    @Column(name = "acc_number")
-    private String accNumber;
+    private String accnumber;
 
     @CreationTimestamp
     private Timestamp DOT;
 
-    @Column(name = "medium_of_trans")
-    private int mediumOfTransaction;
+    private int medium_of_trans;
 
-    @Column(name = "trans_type")
-    private int transType;
+    private int trans_type;
 
-    @Column(name = "trans_amount")
-    private BigDecimal transAmount;
+    private BigDecimal trans_amount;
 
-    @Column(name = "trans_status")
-    private String transStatus;
+    private String trans_status;
 
     private String remark;
-
-
-
-
 
 
 }

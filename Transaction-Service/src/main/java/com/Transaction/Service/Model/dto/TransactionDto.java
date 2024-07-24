@@ -1,7 +1,10 @@
 package com.Transaction.Service.Model.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -13,31 +16,37 @@ import java.sql.Timestamp;
 @JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class TransactionDto {
 
-    private String transactionNumber;
+    private String transaction_number;
 
-   // @JsonProperty("acc_number")
-    private String accNumber;
+    private String accnumber;
 
-    //@CreationTimestamp
     private Timestamp DOT;
 
-    //@JsonProperty("medium_of_trans")
-    private int mediumOfTransaction;
 
-    //@JsonProperty("trans_type")
-    private int transType;
+    private String medium_of_trans;
 
-    //@JsonProperty("trans_amount")
-    private BigDecimal transAmount;
 
-   // @JsonProperty("trans_status")
-    private boolean transStatus;
+    private int trans_type;
+
+    private BigDecimal trans_amount;
+
+    private String trans_status;
 
     private String remark;
 
+    private String medium_of_transaction_name;
 
-    private String transTypeName;
+    private String trans_type_name;
 
-    private String mediumOfTransactionName;
 
+    public TransactionDto(java.lang.String transaction_number, java.lang.String accnumber, java.sql.Timestamp DOT, java.math.BigDecimal trans_amount, java.lang.String trans_status, java.lang.String remark, java.lang.String trans_type_name, java.lang.String medium_of_transaction_name) {
+        this.transaction_number = transaction_number;
+        this.accnumber = accnumber;
+        this.DOT = DOT;
+        this.trans_amount = trans_amount;
+        this.trans_status = trans_status;
+        this.remark = remark;
+        this.medium_of_transaction_name = medium_of_transaction_name;
+        this.trans_type_name = trans_type_name;
+    }
 }

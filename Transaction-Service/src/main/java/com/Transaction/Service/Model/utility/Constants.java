@@ -2,8 +2,8 @@ package com.Transaction.Service.Model.utility;
 
 public class Constants {
 
-    public static final String AADHAR_REGEX="^[2-9][0-9]{3}[0-9]{4}[0-9]{4}$";
-    public static final String PAN_REGEX="[A-Z]{5}[0-9]{4}[A-Z]{1}";
+    public static final String AADHAR_REGEX = "^[2-9][0-9]{3}[0-9]{4}[0-9]{4}$";
+    public static final String PAN_REGEX = "[A-Z]{5}[0-9]{4}[A-Z]{1}";
     public static final String EMAIL_REGEX = "^(.+)@(.+)$";
     public static final String INPUT_NULL = "Input data should not be null";
     public static final int INPUT_NULL_CODE = 100;
@@ -26,11 +26,12 @@ public class Constants {
     public static final String BAD_REQUEST = "400";
 
     //Kafka Topics
-    public static final String CREATE_NEW_ACCOUNT_ID_TOPIC="Create-account";
+    public static final String CREATE_NEW_ACCOUNT_ID_TOPIC = "Create-account";
 
     public static final String ACCOUNT_INACTIVE_CLOSED = "account is inactive or closed";
-    public static final int ACCOUNT_INACTIVE_CLOSED_CODE =105 ;
+    public static final int ACCOUNT_INACTIVE_CLOSED_CODE = 105;
     public static final String ACCOUNT_INSUFFICIENT_BALANCE = "insufficient balance in the account";
-    public static final int ACCOUNT_INSUFFICIENT_BALANCE_CODE =106 ;
+    public static final int ACCOUNT_INSUFFICIENT_BALANCE_CODE = 106;
     public static final String TRANSACTION_STATUS = "Completed";
+    public static final String ACCOUNT_DOES_NOT_EXITS = "The Account number does not exits";
 }
