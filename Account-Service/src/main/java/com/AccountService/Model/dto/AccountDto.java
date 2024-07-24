@@ -72,7 +72,6 @@ public class AccountDto implements Serializable {
     private String b_ph_num;
 
 
-
     public AccountDto(BigDecimal accBalance) {
         this.acc_balance = accBalance;
     }
