@@ -1,6 +1,7 @@
 package com.Transaction.Service.Service;
 
 import com.Transaction.Service.Model.dto.GetTransactionDto;
+import com.Transaction.Service.Model.dto.Mail;
 import com.Transaction.Service.Model.dto.Response;
 import com.Transaction.Service.Model.dto.TransactionDto;
 import com.Transaction.Service.Model.entity.TransactionDetails;
@@ -9,6 +10,8 @@ import com.Transaction.Service.Model.utility.PDFGenerator;
 import com.Transaction.Service.Model.utility.Validation;
 import com.Transaction.Service.Repository.AccountDetailsRepository;
 import com.Transaction.Service.Repository.TransactionRepository;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +19,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.messaging.MessagingException;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 
 @Slf4j
 @Service
@@ -34,6 +42,9 @@ public class TransactionServiceImpl implements TransactionService {
     @Autowired
     PDFGenerator pdfGenerator;
 
+    @Autowired
+    private JavaMailSender javaMailSender;
+
     @Override
     public Response createTransaction(TransactionDto transactionDto) {
         log.info("Inside TransactionServiceImpl::createTransaction");
@@ -42,7 +53,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public Response getTransactionStatement(GetTransactionDto getTransactionDto) {
+    public Response getTransactionStatement(GetTransactionDto getTransactionDto) throws IOException {
         log.info("Inside TransactionServiceImpl::getTransactionStatement with data ", getTransactionDto);
         Response response = new Response();
         if (getTransactionDto.getRequestType().equals("Download")) {
@@ -66,16 +77,50 @@ public class TransactionServiceImpl implements TransactionService {
                 Response.builder().message(Constants.DATA_NOT_FOUND).code(Constants.DATA_NOT_FOUND_CODE).build();
     }
 
-    private Response emailTransactionDetailsByDateRange(GetTransactionDto getTransactionDto) {
+    private Response emailTransactionDetailsByDateRange(GetTransactionDto getTransactionDto) throws IOException {
         Response response = new Response();
+        String path = pdfGenerator.generatePdfReport(getTransactionDto);
+        sendEmailWithAttachment();
         return response;
     }
+
+    public void sendEmailWithAttachment() throws MessagingException, IOException {
+        Mail mail = new Mail();
+        mail.setMailFrom("soumya.sphatige@gmail.com");
+        mail.setMailTo("soumya.sphatige@gmail.com");
+        mail.setMailSubject("Spring Boot - Email demo");
+        mail.setMailContent("Just testing");
+        sendEmail(mail);
+
+    }
+
+
+    public void sendEmail(Mail mail)
+    {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        try {
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+            mimeMessageHelper.setSubject(mail.getMailSubject());
+            mimeMessageHelper.setFrom(new InternetAddress(mail.getMailFrom()));
+            mimeMessageHelper.setTo(mail.getMailTo());
+            mimeMessageHelper.setText(mail.getMailContent());
+            javaMailSender.send(mimeMessageHelper.getMimeMessage());
+        }
+        catch (MessagingException e) {
+            e.printStackTrace();
+        } catch (jakarta.mail.MessagingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
+
 
     private Response downloadTransactionDetailsByDateRange(GetTransactionDto getTransactionDto) {
         log.info("Inside TransactionServiceImpl::getTransactionStatement wirh downloadTransactionDetailsByDateRange ");
         Response response = new Response();
         String path = pdfGenerator.generatePdfReport(getTransactionDto);
-
         return (path != null) ?
                 Response.builder().message(Constants.SUCCESS).code(Constants.SUCCESS_CODE).data(path).build()
                 :

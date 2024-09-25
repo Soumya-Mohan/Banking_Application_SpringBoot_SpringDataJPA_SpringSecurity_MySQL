@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 
 @Slf4j
 @RestController
@@ -29,7 +31,7 @@ public class TransactionController {
     }
 
     @GetMapping("/getTransactionStatement")
-    public Response getTransactionStatement(@RequestBody GetTransactionDto getTransactionDto) {
+    public Response getTransactionStatement(@RequestBody GetTransactionDto getTransactionDto) throws IOException {
         log.info("Inside TransactionController::getTransactionStatement");
         return transactionService.getTransactionStatement(getTransactionDto);
 
