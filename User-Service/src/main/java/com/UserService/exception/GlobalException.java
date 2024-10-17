@@ -1,6 +1,6 @@
 package com.UserService.exception;
 
-public class GlobalException extends RuntimeException{
+public class GlobalException extends RuntimeException {
 
     private final String errorCode;
 

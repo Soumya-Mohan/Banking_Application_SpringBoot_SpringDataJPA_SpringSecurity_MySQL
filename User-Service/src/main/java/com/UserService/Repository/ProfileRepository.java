@@ -10,6 +10,6 @@ import java.util.Optional;
 @Repository
 public interface ProfileRepository extends JpaRepository<Profile, Integer> {
 
-   @Query("Select p from Profile p where Aadhar_num=:Id or PAN_Num =:Id")
+    @Query("Select p from Profile p where Aadhar_num=:Id or PAN_Num =:Id")
     Optional<Profile> findbyAadharNum(String Id);
 }

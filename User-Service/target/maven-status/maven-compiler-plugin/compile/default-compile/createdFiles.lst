@@ -3,10 +3,14 @@ com\UserService\Model\entity\Profile.class
 com\UserService\service\ProfileService.class
 com\UserService\Model\utility\Validation.class
 com\UserService\Model\dto\Response.class
+com\UserService\exception\GlobalException.class
 com\UserService\Model\entity\Profile$ProfileBuilder.class
 com\UserService\Model\utility\Constants.class
+com\UserService\Config\SpringSecurityConfig.class
 com\UserService\Model\dto\UserprofileDto.class
 com\UserService\service\ProfileServiceImpl.class
 com\UserService\UserServiceApplication.class
+com\UserService\controller\UserProfileController.class
 com\UserService\Model\dto\Response$ResponseBuilder.class
+com\UserService\exception\ResourceConflict.class
 com\UserService\Model\dto\UserprofileDto$UserprofileDtoBuilder.class

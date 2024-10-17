@@ -2,13 +2,13 @@ package com.UserService.Model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.sql.Date;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 @Data
 @AllArgsConstructor
@@ -60,5 +60,6 @@ public class UserprofileDto implements Serializable {
     private String s_mobile_num;
     @JsonProperty("secondaryEmailId")
     private String s_email_id;
+    private String password;
 
 }

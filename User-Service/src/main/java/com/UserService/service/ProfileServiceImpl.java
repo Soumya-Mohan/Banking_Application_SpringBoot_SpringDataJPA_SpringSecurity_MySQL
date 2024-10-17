@@ -2,10 +2,12 @@ package com.UserService.service;
 
 import com.UserService.Model.dto.Response;
 import com.UserService.Model.dto.UserprofileDto;
+import com.UserService.Model.entity.MyProfile_Security;
 import com.UserService.Model.entity.Profile;
 import com.UserService.Model.utility.Constants;
 import com.UserService.Repository.ProfileRepository;
 import com.UserService.exception.ResourceConflict;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -14,32 +16,35 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class ProfileServiceImpl implements ProfileService {
-
-    @Autowired
-    ProfileRepository profileRepository;
-
-    @Autowired
-    private ModelMapper modelMapper;
-
-    private static final Response response = new Response();
+@NoArgsConstructor(force = true)
+public class ProfileServiceImpl implements ProfileService, UserDetailsService {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
+    @Autowired
+    ProfileRepository profileRepository;
+    @Autowired
+    PasswordEncoder passwordEncoder;
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Override
     public Response createUser(UserprofileDto userprofileDto) {
         log.info("Inside ProfileServiceImpl::createUser : {}");
+        Response response = new Response();
         try {
             //checking user is already exists or not based on aadhar card number
             profileRepository.findbyAadharNum(userprofileDto.getAadhar_num())
@@ -69,6 +74,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public Response getProfileByAadharNumOrPan(String number) {
+        Response response = new Response();
         profileRepository.findbyAadharNum(number)
                 .ifPresentOrElse((profile) ->
                         {
@@ -103,9 +109,16 @@ public class ProfileServiceImpl implements ProfileService {
 
     private Profile convertToProfileEntity(UserprofileDto userprofileDto) {
         Profile profile = modelMapper.map(userprofileDto, Profile.class);
+        profile.setPassword(passwordEncoder.encode(userprofileDto.getPassword()));
         System.out.println(profile.toString());
         return profile;
     }
 
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<Profile> profile = profileRepository.findbyAadharNum(username);
+        return (UserDetails) profile.map(MyProfile_Security::new)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+    }
 }

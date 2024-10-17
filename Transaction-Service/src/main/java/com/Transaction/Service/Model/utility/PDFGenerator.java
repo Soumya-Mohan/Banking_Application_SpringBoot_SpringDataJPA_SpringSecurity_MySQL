@@ -21,9 +21,9 @@ import java.util.List;
 
 @Component("pdfGenerator")
 public class PDFGenerator {
-    private static Font COURIER = new Font(Font.FontFamily.COURIER, 20, Font.BOLD);
-    private static Font COURIER_SMALL = new Font(Font.FontFamily.COURIER, 16, Font.BOLD);
-    private static Font COURIER_SMALL_FOOTER = new Font(Font.FontFamily.COURIER, 12, Font.BOLD);
+    private static final Font COURIER = new Font(Font.FontFamily.COURIER, 20, Font.BOLD);
+    private static final Font COURIER_SMALL = new Font(Font.FontFamily.COURIER, 16, Font.BOLD);
+    private static final Font COURIER_SMALL_FOOTER = new Font(Font.FontFamily.COURIER, 12, Font.BOLD);
     @Autowired
     TransactionRepository transactionRepository;
     @Value("${pdfDir}")
